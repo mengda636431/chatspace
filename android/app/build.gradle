@@ -1,0 +1,94 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+apply plugin: 'com.huawei.agconnect'
+apply plugin: 'com.android.application'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+
+android {
+
+//    signingConfigs {
+//        config {
+//            keyPassword '123456'
+//            keyAlias 'testalias'
+//            storeFile file('/Users/vivian/Documents/LeanCloud/Flutter_WorkPlace/FlutterRealtimeDemo/lc_realtime/android/test.keystore')
+//            storePassword '123456'
+//        }
+//    }
+    //配置签名
+    compileSdkVersion 28
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.lcrealtime"
+        minSdkVersion 23
+        targetSdkVersion 28
+        multiDexEnabled true
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+//        debug {
+//            signingConfig signingConfigs.config
+//        }
+//        release {
+//            signingConfig signingConfigs.config
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation files("libs/vivo_pushsdk-v2.9.0.0.aar")
+//    implementation 'cn.leancloud:mixpush-oppo:6.5.12'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    //使用存储服务
+    implementation 'cn.leancloud:storage-android:8.1.4'
+    //使用即时通信
+    implementation 'cn.leancloud:realtime-android:8.1.4'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    //混合推送需要的包
+//    implementation 'cn.leancloud:mixpush-android:6.5.12'
+    //华为推送
+//    implementation 'com.huawei.hms:push:4.0.2.300'
+//    魅族推送需要的包
+//    implementation 'com.meizu.flyme.internet:push-internal:3.6.+@aar'
+//    implementation files("libs/vivo_pushsdk-v2.9.0.0.aar")
+//    implementation 'cn.leancloud:mixpush-oppo:6.5.12'
+}
